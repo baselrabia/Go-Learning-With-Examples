@@ -7,7 +7,7 @@ package main
 
 func main() {
 
-  cards := newDeck()
+//   cards := newDeck()
 
 //   hand ,remaingCards := deal(cards,10)
 
@@ -18,7 +18,10 @@ func main() {
 	// oneString = string(toByte(oneString))
 	// fmt.Println(oneString)
 
-	cards.saveToFile("my_cards")
+	// cards.saveToFile("my_cards")
 
+	cards := newDeckFromFile("my_cards")
+
+	cards.print()
 
 }
