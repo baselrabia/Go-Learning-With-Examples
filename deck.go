@@ -16,7 +16,7 @@ func newDeck() deck {
 	cards := deck{}
 
 	cardSuit := []string{"Spades", "Hearts", "Clubs", "Diamonds"}
-	cardValue := []string{"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"}
+	cardValue := []string{"Ace","Jack", "Queen", "King"}
 	for _, suit := range cardSuit {
 		for _, value := range cardValue {
 			cards = append(cards, fmt.Sprintf("%s of %s", value, suit))
