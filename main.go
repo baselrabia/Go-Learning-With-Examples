@@ -1,15 +1,16 @@
 package main
 
  
+ 
 
 func main() {
 
- 	cards := deck{"ace","new","Diamonds"}
-	cards.print()
+  cards := newDeck()
 
-	new := newDeck()
+  hand ,remaingCards := deal(cards,10)
 
-	new.print()
-	
+  hand.print()
+  remaingCards.print()
+
 
 }
