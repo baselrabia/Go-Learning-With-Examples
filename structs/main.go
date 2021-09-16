@@ -30,9 +30,9 @@ func main() {
 
 
 	alex.print()
-	alexPointer := &alex //define pointer 
+ 
 
-	alexPointer.updateName("jim")
+	alex.updateName("jim")
 	alex.print()
 
 }
