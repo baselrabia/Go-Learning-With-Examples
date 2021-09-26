@@ -1,0 +1,91 @@
+version: '3'
+services:
+  go-app:
+    container_name: go.app
+    build:
+      context: ../crud-gin
+      dockerfile: ../docker/Dockerfile
+    ports: 
+      - 8088:8080 
+    restart: on-failure
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      # - fullstack-postgres          # Uncomment this when using postgres.
+      - go-mysql           # Uncomment this when using mysql.
+    networks:
+      - go-network
+
+
+  # fullstack-postgres:
+  #   image: postgres:latest
+  #   container_name: full_db_postgres
+  #   environment:
+  #     - POSTGRES_USER=${DB_USER}  
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD}
+  #     - POSTGRES_DB=${DB_NAME}
+  #     - DATABASE_HOST=${DB_HOST} 
+  #   ports:
+  #     - '5432:5432'
+  #   volumes:
+  #     - database_postgres:/var/lib/postgresql/data
+  #   networks:
+  #     - go-network
+    
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin_container
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   depends_on:
+  #     - fullstack-postgres
+  #   ports:
+  #     - "5050:80"
+  #   networks:
+  #     - go-network
+  #   restart: unless-stopped
+
+  
+  go-mysql:
+    image: mariadb:10.5
+    container_name: go.mysql
+    ports: 
+      - 3308:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=ZdwYUqchpwOGOQ0J
+      - MYSQL_ROOT_HOST=${DB_HOST} 
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+    volumes:
+      - database_mysql:/var/lib/mysql
+    networks:
+      - go-network
+  
+  go-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: go.phpmyadmin
+    depends_on:
+      - go-mysql
+    environment:
+      - PMA_HOST=go-mysql # Note the "mysql". Must be the name of the what you used as the mysql service.
+      - PMA_USER=${DB_USER}
+      - PMA_PORT=${DB_PORT}
+      - PMA_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 9090:80
+    restart: always
+    networks:
+      - go-network
+
+
+volumes:
+  api:
+  # database_postgres:                  # Uncomment this when using postgres.
+  database_mysql:                   # Uncomment this when using mysql.
+
+# Networks to be created to facilitate communication between containers
+networks:
+  go-network:
+    driver: bridge
