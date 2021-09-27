@@ -1,0 +1,47 @@
+version: "3.8"
+
+services: # adds 2 services: mysql and phpmyadmin to connect with
+  db:
+    image: mysql:5.7 # use latest version of mysql
+    container_name: db # add a name for the container
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+    environment: # add default values, see docs for more info.
+      MYSQL_USER: user
+      MYSQL_ROOT_PASSWORD: mypassword
+      MYSQL_PASSWORD: mypassword
+      MYSQL_DATABASE: testdb # create this database on startup
+    volumes:
+      - database_mysql:/var/lib/mysql
+    ports:
+      - '3306:3306'
+    networks:
+      - go-network
+  
+  go-phpmyadmin:
+    container_name: go.phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    environment:
+      - MYSQL_ROOT_PASSWORD=mypassword #(Required) set the password for the root superuser account.
+      - PMA_HOST=db   # define the address/hostname of the mysql server eg mysql container name.
+      - PMA_USER=root # this is the root user to login on startup
+      - PMA_PASSWORD=mypassword # use the root password to login on startup.
+      # Create a new user on startup (optional)
+      # MYSQL_USER: newuser
+      # MYSQL_PASSWORD: mypassword
+    ports:
+      - 9090:80
+    restart: always
+    networks:
+      - go-network
+
+volumes: # add persistent data even if container is removed.
+  database_mysql:
+
+
+# Networks to be created to facilitate communication between containers
+networks:
+  go-network:
+    driver: bridge

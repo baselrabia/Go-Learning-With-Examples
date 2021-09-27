@@ -16,18 +16,16 @@ services:
     networks:
       - go-network
 
- 
   go-mysql:
-    image: mysql:5.7
+    image: mysql:5.7 
     container_name: go.mysql
     ports: 
-      - 3308:3306
+      - 3306:3306
     environment:
-      - MYSQL_ROOT_HOST=${DB_HOST} 
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_DATABASE=${DB_NAME}
-      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME} # create this database on startup
     volumes:
       - database_mysql:/var/lib/mysql
     networks:
@@ -39,10 +37,13 @@ services:
     depends_on:
       - go-mysql
     environment:
-      - PMA_HOST=go-mysql # Note the "mysql". Must be the name of the what you used as the mysql service.
-      - PMA_USER=${DB_USER}
-      - PMA_PORT=${DB_PORT}
-      - PMA_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD} #(Required) set the password for the root superuser account.
+      - PMA_HOST=go-mysql # define the address/hostname of the mysql server eg mysql container name.
+      - PMA_USER=root # this is the root user to login on startup
+      - PMA_PASSWORD=${DB_PASSWORD} # use the root password to login on startup.
+      # Create a new user on startup (optional)
+      # MYSQL_USER: newuser
+      # MYSQL_PASSWORD: mypassword
     ports:
       - 9090:80
     restart: always
