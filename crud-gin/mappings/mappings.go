@@ -10,6 +10,8 @@ import (
 var Router *gin.Engine
 
 func CreateUrlMappings() {
+		println("CreateUrlMappings")
+
 	Router = gin.Default()
 	Router.Use(controllers.Cors())
 	// v1 of the API
